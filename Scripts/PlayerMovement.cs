@@ -144,10 +144,20 @@ public class PlayerMovement : MonoBehaviour
 
         //判断是否在地面
         if (grounded)
+        {
             thRB.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
+            if(moveDirection.sqrMagnitude > 0.9f)
+                AudioManager.instance.PlaySoundEffect(1);
+            else 
+                AudioManager.instance.PauseSoundEffect(1);
+        }
         //在空中
         else if (!grounded)
+        {
             thRB.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            AudioManager.instance.PauseSoundEffect(1);
+        }
 
         //让玩家不会顺着斜坡滑落
         thRB.useGravity = !OnSlope();
