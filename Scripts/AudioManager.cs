@@ -8,15 +8,12 @@ public class AudioManager : MonoBehaviour
 
     [Header("Sound Effect")]
     public AudioSource[] soundEffects;
+    public AudioSource shootSound;
+    public AudioSource[] reloadSoundEffect;
 
     private void Awake()
     {
         instance = this;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
     }
 
     public void PlaySoundEffect(int soundToPlay)
@@ -26,6 +23,11 @@ public class AudioManager : MonoBehaviour
             soundEffects[soundToPlay].Play();
     }
 
+    public void PlayShootSound()
+    {
+        shootSound.Play();
+    }
+
     public void StopSoundEffect(int soundToPlay)
     {
         if (soundEffects[soundToPlay].isPlaying)
@@ -33,10 +35,22 @@ public class AudioManager : MonoBehaviour
             soundEffects[soundToPlay].Stop();
     }
 
-    public void PauseSoundEffect(int soundToPlay)
+    public void PauseSoundEffect()
     {
-        if (soundEffects[soundToPlay].isPlaying)
-            //再播放
-            soundEffects[soundToPlay].Pause();
+        for(int i = 0; i < soundEffects.Length; i++)
+        {
+            if (soundEffects[i].isPlaying)
+                //再播放
+                soundEffects[i].Pause();
+        }
+    }
+
+    public void PlayReloadSoundEffect(int state)
+    {
+        for (int i = 0; i < reloadSoundEffect.Length; i++)
+        {
+            reloadSoundEffect[i].Stop();
+        }
+        reloadSoundEffect[state].Play();
     }
 }

@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Animator Controller")]
+    public bool isRun;
+    public bool isWalk;
 
     [Header("Movement")]
     private float moveSpeed;
@@ -147,16 +150,28 @@ public class PlayerMovement : MonoBehaviour
         {
             thRB.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-            if(moveDirection.sqrMagnitude > 0.9f)
-                AudioManager.instance.PlaySoundEffect(1);
-            else 
-                AudioManager.instance.PauseSoundEffect(1);
+            if (moveDirection.sqrMagnitude > 0.9f)
+                if (moveSpeed > 10)
+                {
+                    AudioManager.instance.PlaySoundEffect(0);
+                    PlayerAnimController.instance.PlayerMovement(2);
+                }
+                else
+                {
+                    AudioManager.instance.PlaySoundEffect(1);
+                    PlayerAnimController.instance.PlayerMovement(1);
+                }
+            else
+            {
+                AudioManager.instance.PauseSoundEffect();
+                PlayerAnimController.instance.PlayerMovement(0);
+            }
         }
         //在空中
         else if (!grounded)
         {
             thRB.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-            AudioManager.instance.PauseSoundEffect(1);
+            AudioManager.instance.PauseSoundEffect();
         }
 
         //让玩家不会顺着斜坡滑落

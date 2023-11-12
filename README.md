@@ -41,3 +41,31 @@
 1. 射击一般选用射线检测的方法，发出射线检测物体，判断是否打到了。即使用Physics.Raycast。
 2. audioSource.isPlaying：可以用于判断当前音效是否正在播放。
 3. 在整个场景中一般只有一个Audio Listener，加载在Camera上，如果设置多个的话Unity会不知道播放哪个监听器发出的声音。
+
+## Development Day 4: 2023.11.12
+
+1. 粒子效果：一般**火焰爆炸**，**水流**等等都用到粒子效果。需要创建诸如**火、烟或液体之类的动态对象**时，由于很难用网格 (3D) 或精灵 (2D) 描绘这种对象，因此粒子系统非常有用。网格和精灵更适合于描绘诸如房屋或汽车之类的实体对象。
+
+2. 使用`ParticleEffect.Play()`;可以播放粒子特效。
+
+3. **点光源**：“A Point Light is located at a point in space and sends light out in all directions equally. The direction of light hitting a surface is the line from the point of contact back to the center of the light object. The intensity diminishes with distance from the light, reaching zero at a specified range. Light intensity is inversely proportional to the square of the distance from the source. This is known as ‘inverse square law’ and is similar to how light behaves in the real world.”（摘自Unity手册）一般用于模拟场景中火花或者爆炸照亮周围环境。
+
+4. `Quaternion.FromToRotation(fromDirection，toDirection)`：创建一个从 `fromDirection` 旋转到 `toDirection` 的旋转。
+
+   Quaternion（摘自Unity手册）： 
+
+   ​	四元数用于表示旋转。
+
+   ​	它们结构紧凑，不受万向锁影响，可以轻松插值。 Unity 内部使用四元数来表示所有旋转。
+
+   ​	它们基于复数，不容易理解。 您几乎不会有机会访问或修改单个四元数分量（x、y、z、w）； 大多数情况下，您只需要获取现有旋转（例如，来自 Transform），然后使用它们构造新的旋转 （例如，在两个旋转之间平滑插值）。 您绝大多数时间使用的四元数函数为：`Quaternion.LookRotation`、`Quaternion.Angle`、`Quaternion.Euler`、`Quaternion.Slerp`、`Quaternion.FromToRotation` 和 `Quaternion.identity`。（其他函数仅用于一些十分奇特的用例。）
+
+   ​	您可以使用 `Quaternion.operator` 对旋转进行旋转，或对向量进行旋转。
+
+   ​	注意，Unity 使用的是标准化的四元数。
+
+5. `transform.position`和`transform.localPosition`：`localPosition`是相对于父物体变换的位置，`position`是世界空间中的变换位置。
+
+6. `Vector3.Lerp`：线性插值，能起到一个平滑移动的效果。
+
+7. `Anim.Play()`：可以直接播放指定动画。

@@ -19,8 +19,15 @@ public class WeaponController : MonoBehaviour
     private bool gunShoot;
     private RaycastHit hit;
 
+    [Header("Practical System")]
+    public ParticleSystem muzzleFlash;// 枪口火焰
+    public Light muzzleFlashLight;//枪口灯光 
+    public GameObject hitParticle;
+     public GameObject bulletHole;
+
     [Header("KeyBinds")]
     private KeyCode reloadBulletKey;
+    private KeyCode inspectKey;
 
     [Header("UI Config")]
     public Image shootPoint;
@@ -28,9 +35,17 @@ public class WeaponController : MonoBehaviour
 
     void Start()
     {
+        //按键绑定
         reloadBulletKey = KeyCode.R;
+        inspectKey = KeyCode.F;
+
+        //参数初始化
         currentBullets = bulletsMag;
+
+        //初始化函数调用
         UpdateAmmoUI();
+
+
     }
 
     void Update()
@@ -40,10 +55,19 @@ public class WeaponController : MonoBehaviour
         {
             GunFire();
         }
+        else
+        {
+            muzzleFlashLight.enabled = false;
+        }
         //实现换弹操作
         if (Input.GetKey(reloadBulletKey) && currentBullets < bulletsMag)
         {
             ReloadBulletKey();
+        }
+        //实现查看操作
+        if(Input.GetKeyDown(inspectKey))
+        {
+            PlayerAnimController.instance.InspectWeapon();
         }
         //通过计时器控制射速
         if (fireTime < fireRate)
@@ -64,8 +88,18 @@ public class WeaponController : MonoBehaviour
             if (Physics.Raycast(shooterPoint.position, shootDirection, out hit, range))
             {
                 Debug.Log(hit.transform.name + "打到了");
+                GameObject hitParticleEffect = Instantiate(hitParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal));//实例出子弹击中的火光特效。
+                GameObject bulletHoleEffect = Instantiate(bulletHole, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal));//实例出子弹击中的弹坑特效。
+
+                Destroy(hitParticleEffect, 1);
+                Destroy(bulletHoleEffect, 3);
             }
             currentBullets--;
+
+            //播放射击音效和火光和粒子
+            AudioManager.instance.PlayShootSound();
+            muzzleFlashLight.enabled = true;
+            muzzleFlash.Play();
 
             //更新子弹
             UpdateAmmoUI();
@@ -89,12 +123,28 @@ public class WeaponController : MonoBehaviour
         {
             //更新备弹数量
             bulletLeft -= bulletChange;
-
+            if(currentBullets == 0)
+            {
+                PlayerAnimController.instance.ReloadAmmo(0);
+            }
+            else
+            {
+                PlayerAnimController.instance.ReloadAmmo(1);
+            }
             //填充当前子弹
             currentBullets = bulletsMag;
         }
         else if(bulletLeft < bulletChange)
         {
+            if (currentBullets == 0)
+            {
+                PlayerAnimController.instance.ReloadAmmo(0);
+            }
+            else
+            {
+                PlayerAnimController.instance.ReloadAmmo(1);
+            }
+
             //更新当前子弹数量
             currentBullets += bulletLeft;
 
