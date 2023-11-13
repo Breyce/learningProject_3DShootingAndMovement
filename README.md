@@ -69,3 +69,12 @@
 6. `Vector3.Lerp`：线性插值，能起到一个平滑移动的效果。
 
 7. `Anim.Play()`：可以直接播放指定动画。
+
+
+
+## Development Day 5: 2023.11.13
+
+1. `anim.CrossFadeInFixedTime("Fire", 0, 0)`可以实现使用以秒为单位的时间创建从当前状态到任何其他状态的淡入淡出效果。指定状态名称时，应该包含父层的名称。例如，如果`Base Layer`中有一个`Run`状态，则该名称为`BaseLayer.Run`。
+2. `GetCurrentAnimatorStateInfo (int layerIndex);`返回当前层的动画状态，其中包含有关当前状态的信息。包括访问状态的速度、长度、名称和其他变量。
+3. `mainCamera = Camera.main;`可以获取主相机，之后可以访问主相机的参数并进行修改；
+4. 动画的过渡来说，整个播放流程是走的蓝色部分，因此在设置的时候可以通过调整蓝色部分的状态来调整动画变换的速度、节奏。![image-20231113171821543](Image/动画过渡.png)

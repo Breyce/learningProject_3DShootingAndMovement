@@ -20,9 +20,9 @@ public class PlayerAnimController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
     
-    public void InspectWeapon()
+    public void AnimSetTrigger(string name)
     {
-        anim.SetTrigger("Inspect");
+        anim.SetTrigger(name);
     }
 
     public void PlayerMovement(int moveState)
@@ -42,17 +42,32 @@ public class PlayerAnimController : MonoBehaviour
         }
     }
 
-    public void ReloadAmmo(int changeState)
+    public void AnimPlay(string name, int soundEffectIndex)
     {
-        if (changeState == 0) //0为打空后换弹，1为没打空换弹
+        anim.Play(name, 0, 0);
+        AudioManager.instance.PlayReloadSoundEffect(soundEffectIndex);
+    }
+    
+    public void Fire(string name, float fadeTime)
+    {
+        anim.CrossFadeInFixedTime(name, fadeTime);
+    }
+
+    public void AnimSetBool(string name, bool state)
+    {
+        anim.SetBool(name, state);
+    }
+
+    public bool CheckAnimatorStateInfo(string name)
+    {
+        AnimatorStateInfo info = anim.GetCurrentAnimatorStateInfo(0);
+        if (info.IsName(name))
         {
-            anim.Play("reloadOutOfAmmo", 0, 0);
-            AudioManager.instance.PlayReloadSoundEffect(0);
+            return true;
         }
-        else if(changeState == 1)
+        else
         {
-            anim.Play("reloadAmmoLeft", 0, 0);
-            AudioManager.instance.PlayReloadSoundEffect(1);
+            return false;
         }
     }
 }

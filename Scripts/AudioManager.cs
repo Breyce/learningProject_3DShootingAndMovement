@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Sound Effect")]
     public AudioSource[] soundEffects;
-    public AudioSource shootSound;
+    public AudioSource[] soundNoNeedStop;
     public AudioSource[] reloadSoundEffect;
 
     private void Awake()
@@ -23,9 +23,9 @@ public class AudioManager : MonoBehaviour
             soundEffects[soundToPlay].Play();
     }
 
-    public void PlayShootSound()
+    public void PlayNoNeedStopSound(int soundIndex)
     {
-        shootSound.Play();
+        soundNoNeedStop[soundIndex].Play();
     }
 
     public void StopSoundEffect(int soundToPlay)
