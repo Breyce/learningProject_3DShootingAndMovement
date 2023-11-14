@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static PlayerMovement;
 
 public class WeaponController : MonoBehaviour
 {
@@ -34,20 +35,34 @@ public class WeaponController : MonoBehaviour
     [Header("KeyBinds")]
     private KeyCode reloadBulletKey;
     private KeyCode inspectKey;
+    private KeyCode GunShootModeKey;
 
     [Header("UI Config")]
     public Image shootPoint;
     public Text ammoText;
-    public Camera mainCamera;
+    public Text shootModel;
+    private Camera mainCamera;
+
+    /* 枚举定义全自动和半自动类型 */
+    public enum ShootMode
+    {
+        AutoRife, SemiGun
+    };
+    public ShootMode shootMode;
+    private string shootName;
 
     void Start()
     {
         //按键绑定
         reloadBulletKey = KeyCode.R;
         inspectKey = KeyCode.F;
+        GunShootModeKey = KeyCode.C;
 
         //参数初始化
         currentBullets = bulletsMag;
+        shootMode= ShootMode.AutoRife; // 初始为全自动
+        shootName = "全自动模式";
+        shootModel.text = shootName;
 
         //初始化函数调用
         UpdateAmmoUI();
@@ -59,7 +74,21 @@ public class WeaponController : MonoBehaviour
 
     void Update()
     {
-        gunShoot = Input.GetMouseButton(0);
+        //状态机检测
+        StateHandler();
+
+        switch (shootMode)
+        {
+            case ShootMode.AutoRife: // 全自动
+                gunShoot = Input.GetMouseButton(0);
+                fireRate = 0.1f;
+                break;
+            case ShootMode.SemiGun: //半自动
+                gunShoot = Input.GetMouseButtonDown(0);
+                fireRate = 0.2f;
+                break;
+        }
+
         if (gunShoot)
         {
             GunFire();
@@ -99,6 +128,27 @@ public class WeaponController : MonoBehaviour
         AmingFire();
     }
 
+    /*
+     * 状态机
+     */
+    public void StateHandler()
+    {
+        if (Input.GetKeyDown(GunShootModeKey))
+        {
+            if(shootMode == ShootMode.AutoRife)
+            {
+                shootMode = ShootMode.SemiGun;
+                shootName = "半自动模式";
+                shootModel.text = shootName;
+            }
+            else
+            {
+                shootMode = ShootMode.AutoRife;
+                shootName = "全自动模式";
+                shootModel.text = shootName;
+            }
+        }
+    }
     /*
      * 射击函数
      * GunFire()：开火射击函数
